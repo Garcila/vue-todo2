@@ -29,23 +29,33 @@ export default {
   data() {
     return {
       newTodo: "",
-      todos: [],
-      keyCounter: 0
+      todos: []
     };
   },
   methods: {
     addTodo() {
-      const todo = { title: this.newTodo, done: false, id: this.keyCounter };
+      const todo = { title: this.newTodo, done: false, id: this.title };
       this.todos.push(todo);
-      this.keyCounter = this.keyCounter + 1;
       this.newTodo = "";
     },
     toggleTodo(todo) {
       todo.done = !todo.done;
+      localStorage.setItem("todos", JSON.stringify(this.todos));
     },
     deleteTodo(todo) {
       const todoIndex = this.todos.indexOf(todo);
       this.todos.splice(todoIndex, 1);
+    }
+  },
+  watch: {
+    todos() {
+      localStorage.setItem("todos", JSON.stringify(this.todos));
+    },
+    deep: true
+  },
+  mounted() {
+    if (localStorage.getItem("todos")) {
+      this.todos = JSON.parse(localStorage.getItem("todos"));
     }
   }
 };
